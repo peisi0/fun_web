@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多应用动态 App 横幅</title>
+    <style>
+        /* 保持原有样式不变 */
+        body { margin: 0; padding-top: 70px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .custom-app-banner { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(244, 244, 244, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #ccc; display: flex; align-items: center; padding: 0 15px; z-index: 9999; transition: all 0.3s ease;}
+        .banner-close { background: none; border: none; font-size: 24px; color: #8e8e93; cursor: pointer; padding: 0 15px 0 0; }
+        .banner-icon { width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); margin-right: 12px; object-fit: cover; }
+        .banner-info { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .banner-title { margin: 0; font-size: 14px; color: #1c1c1e; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+        .banner-desc { margin: 2px 0 0 0; font-size: 12px; color: #8e8e93; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+        .banner-btn { background: #007aff; color: #fff; border: none; padding: 6px 16px; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;}
+        
+        /* 仅供测试页面的按钮样式 */
+        .test-btns { padding: 20px; }
+        .test-btns button { margin: 5px; padding: 10px 15px; font-size: 14px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="appBanner" class="custom-app-banner">
+        <button class="banner-close" onclick="closeBanner()">×</button>
+        <img id="bannerIcon" src="" alt="App Icon" class="banner-icon">
+        <div class="banner-info">
+            <h4 id="bannerTitle" class="banner-title">加载中...</h4>
+            <p id="bannerDesc" class="banner-desc">加载中...</p>
+        </div>
+        <button id="bannerBtn" class="banner-btn" onclick="">打开</button>
+    </div>
+
+    <div class="test-btns">
+        <h1>多应用横幅测试</h1>
+        <p>点击下方按钮，观察顶部横幅如何动态切换：</p>
+        <button onclick="loadAppBanner('wechat')">显示 微信 (WeChat)</button>
+        <button onclick="loadAppBanner('github')">显示 GitHub</button>
+        <button onclick="loadAppBanner('roblox')">显示 Roblox</button>
+        <button onclick="loadAppBanner('whatsapp')">显示 WhatsApp</button>
+    </div>
+
+    <script>
+        // 1. 应用数据配置表 (这里存放了你所有的 App 信息)
+        const appsData = {
+            'wechat': {
+                title: 'WeChat',
+                author: 'Tencent Technology',
+                icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/91/d5/47/91d547d2-74ba-de19-5eb8-4903328e19ce/AppIcon-0-0-1x_U007emarketing-0-10-0-85-220.png/230x0w.webp', // 微信图标
+                storeUrl: 'https://apps.apple.com/us/app/wechat/id414478124',
+                scheme: 'weixin://'
+            },
+            'github': {
+                title: 'GitHub',
+                author: 'GitHub',
+                icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4a/48/43/4a48434a-9e58-f9b1-6a2d-fc5f1a58c422/AppIcon-0-0-1x_U007emarketing-0-10-0-85-220.png/230x0w.webp', // GitHub图标
+                storeUrl: 'https://apps.apple.com/us/app/github/id1477376905',
+                scheme: 'github://'
+            },
+            'roblox': {
+                title: 'Roblox',
+                author: 'Roblox Corporation',
+                icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/08/bf/9a/08bf9a89-0268-ea00-b6df-20b135c345b5/AppIcon-1x_U007emarketing-0-10-0-85-220.png/230x0w.webp', // Roblox图标
+                storeUrl: 'https://apps.apple.com/us/app/roblox/id431946152',
+                scheme: 'roblox://'
+            },
+            'whatsapp': {
+                title: 'WhatsApp Messenger',
+                author: 'WhatsApp Inc.',
+                icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/aa/6d/da/aa6dda68-6d2c-c820-22c7-b4d49a466fc4/AppIcon-0-0-1x_U007emarketing-0-10-0-0-85-220.png/230x0w.webp', // WhatsApp图标
+                storeUrl: 'https://apps.apple.com/us/app/whatsapp-messenger/id310633997',
+                scheme: 'whatsapp://'
+            }
+        };
+
+        // 2. 动态加载横幅内容的函数
+        function loadAppBanner(appKey) {
+            const app = appsData[appKey];
+            if (!app) return; // 如果找不到对应的应用，就不执行
+
+            // 替换 DOM 元素的内容
+            document.getElementById('bannerIcon').src = app.icon;
+            document.getElementById('bannerTitle').innerText = app.title;
+            document.getElementById('bannerDesc').innerText = app.author;
+            
+            // 动态绑定唤醒和下载事件
+            const btn = document.getElementById('bannerBtn');
+            btn.onclick = function() {
+                openOrDownloadApp(app.scheme, app.storeUrl);
+            };
+
+            // 确保横幅是显示状态
+            document.getElementById('appBanner').style.display = 'flex';
+            document.body.style.paddingTop = '70px';
+        }
+
+        // 3. 核心唤醒/下载逻辑 (支持传入不同的 scheme 和 url)
+        function openOrDownloadApp(appScheme, appStoreLink) {
+            var clickedAt = +new Date();
+            window.location.href = appScheme; // 尝试唤醒
+            setTimeout(function() {
+                var now = +new Date();
+                if (now - clickedAt < 2500) {
+                    window.location.href = appStoreLink; // 唤醒失败，跳应用商店
+                }
+            }, 2000);
+        }
+
+        // 4. 关闭横幅
+        function closeBanner() {
+            document.getElementById('appBanner').style.display = 'none';
+            document.body.style.paddingTop = '0';
+        }
+
+        // 页面加载完成后，默认显示其中一个 (比如 GitHub)
+        window.onload = function() {
+            loadAppBanner('github');
+        };
+    </script>
+
+</body>
+</html>
