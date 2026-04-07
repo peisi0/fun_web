@@ -27,7 +27,7 @@ A pixel-perfect recreation of WeChat's mobile interface with dark mode support a
 
 **Tech Stack:** HTML5, CSS3 (Flexbox), Vanilla JS
 
-[**Launch Demo →**](https://peisi0.github.io/ourchat/) | [**Read Docs →**](https://peisi0.github.io/ourchat/README.md)
+[**Launch Demo →**](https://peisi0.github.io/fun_web/ourchat/) | [**Read Docs →**](https://peisi0.github.io/fun_web/ourchat/README.md)
 
 ---
 
@@ -46,7 +46,7 @@ A stunning interactive thermometer with neon glow effects and real-time visual f
 
 **Tech Stack:** CSS Variables, CSS Animations, Canvas API
 
-[**Launch Demo →**](https://peisi0.github.io/thermometer/)
+[**Launch Demo →**](https://peisi0.github.io/fun_web/thermometer/)
 
 ---
 
@@ -64,7 +64,7 @@ iOS-style smart app banners with deep linking capabilities for multiple applicat
 
 **Tech Stack:** HTML5, CSS3, Vanilla JS (URL Schemes)
 
-[**Launch Demo →**](https://peisi0.github.io/tt/)
+[**Launch Demo →**](https://peisi0.github.io/fun_web/tt/)
 
 ---
 
@@ -83,7 +83,7 @@ A Duolingo-style chemistry learning game focused on mastering chemical ions and 
 
 **Tech Stack:** HTML5, CSS3, KaTeX Library, Vanilla JS
 
-[**Launch Demo →**](https://peisi0.github.io/web/)
+[**Launch Demo →**](https://peisi0.github.io/fun_web/web/)
 
 ---
 
