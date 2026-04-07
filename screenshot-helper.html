@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Generator - Fun Web Projects</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .project-card {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .project-card h3 {
+            margin-top: 0;
+            color: #6366f1;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Screenshot Generator</h1>
+        
+        <div class="info">
+            <strong>💡 Tip:</strong> Use browser screenshot tools or extensions to capture project previews:
+            <ul>
+                <li><strong>Chrome/Edge:</strong> DevTools → Cmd/Ctrl + Shift + P → "Screenshot"</li>
+                <li><strong>Firefox:</strong> Right-click → "Take Screenshot"</li>
+                <li><strong>Mac:</strong> Cmd + Shift + 4</li>
+                <li><strong>Windows:</strong> Win + Shift + S</li>
+            </ul>
+        </div>
+
+        <div class="project-card">
+            <h3>OurChat - WeChat Clone</h3>
+            <p>Best viewport: <code>375x667</code> (iPhone SE)</p>
+            <iframe src="ourchat/index.html"></iframe>
+            <button onclick="openFullscreen('ourchat/index.html')">Open Fullscreen</button>
+        </div>
+
+        <div class="project-card">
+            <h3>Neon Thermometer</h3>
+            <p>Best viewport: <code>1200x800</code> (Desktop)</p>
+            <iframe src="thermometer/index.html"></iframe>
+            <button onclick="openFullscreen('thermometer/index.html')">Open Fullscreen</button>
+        </div>
+
+        <div class="project-card">
+            <h3>Smart App Banner</h3>
+            <p>Best viewport: <code>375x667</code> (Mobile)</p>
+            <iframe src="tt/index.html"></iframe>
+            <button onclick="openFullscreen('tt/index.html')">Open Fullscreen</button>
+        </div>
+
+        <div class="project-card">
+            <h3>Chemistry Quiz</h3>
+            <p>Best viewport: <code>600x800</code> (Mobile/Tablet)</p>
+            <iframe src="web/index.html"></iframe>
+            <button onclick="openFullscreen('web/index.html')">Open Fullscreen</button>
+        </div>
+
+        <div class="info">
+            <h3>📁 Recommended Screenshots</h3>
+            <p>Create a <code>/screenshots</code> folder with:</p>
+            <ul>
+                <li><code>ourchat-preview.png</code></li>
+                <li><code>thermometer-preview.png</code></li>
+                <li><code>appbanner-preview.png</code></li>
+                <li><code>chemistry-preview.png</code></li>
+                <li><code>main-preview.png</code> (landing page)</li>
+            </ul>
+            <p>Then add them to README files with:</p>
+            <code>![Preview](screenshots/ourchat-preview.png)</code>
+        </div>
+    </div>
+
+    <script>
+        function openFullscreen(url) {
+            window.open(url, '_blank', 'width=1200,height=800');
+        }
+    </script>
+</body>
+</html>
