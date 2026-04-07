@@ -17,6 +17,9 @@ A lightweight, single-page web application replicating the WeChat (Weixin) inter
     * A rule-based chatbot implemented in local JavaScript.
     * **Capabilities:** Tells jokes, remembers context (e.g., if you ask for "another" joke), and handles basic greetings.
     * **Simulation:** Mimics network latency with random timeout delays before replying.
+* **External AI Config (Editable):**
+    * The chatbot keyword groups, response content libraries, translation dictionary, and intent priorities are configurable in `ai-config.json`.
+    * `index.html` loads `ai-config.json` at runtime and falls back to built-in defaults if loading fails.
 * **Real-time Search:** A functioning search bar in the "Chats" tab that redirects queries to Google.
 * **Interactive Settings:** Toggle switches and navigation menus that mimic the real app's behavior.
 
@@ -32,6 +35,17 @@ The project is designed to be simple. The core logic lives in `index.html`.
 ```text
 /
 ├── index.html        # Contains HTML structure, CSS styles, and JS Logic
+├── ai-config.json    # External AI keyword/content/priority configuration
 ├── manifest.json     # (Optional) For PWA installation support
 ├── icon.png          # (Optional) App Icon
 └── README.md
+
+## 🔧 Customize AI Assistant
+
+Edit `ai-config.json` to tune behavior without touching JavaScript code:
+
+* `keywordGroups`: add/remove trigger words
+* `contentLibraries`: update jokes, quotes, tips, fallbacks, etc.
+* `translateDict`: add quick translation pairs
+* `capabilityMenuItems`: update help menu display
+* `intentPriorities`: change intent routing precedence
