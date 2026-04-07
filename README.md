@@ -6,7 +6,7 @@ A curated collection of interactive web experiments and demos built with **vanil
 
 ## 🎯 Live Demos
 
-### [**🌐 View All Projects →**](https://your-username.github.io/fun_web/)
+### [**🌐 View All Projects →**](https://peisi0.github.io/fun_web/)
 
 ---
 
@@ -27,7 +27,7 @@ A pixel-perfect recreation of WeChat's mobile interface with dark mode support a
 
 **Tech Stack:** HTML5, CSS3 (Flexbox), Vanilla JS
 
-[**Launch Demo →**](ourchat/index.html) | [**Read Docs →**](ourchat/README.md)
+[**Launch Demo →**](peisi0.github.io/ourchat/) | [**Read Docs →**](peisi0.github.io/ourchat/README.md)
 
 ---
 
@@ -46,7 +46,7 @@ A stunning interactive thermometer with neon glow effects and real-time visual f
 
 **Tech Stack:** CSS Variables, CSS Animations, Canvas API
 
-[**Launch Demo →**](thermometer/index.html)
+[**Launch Demo →**](peisi0.github.io/thermometer/)
 
 ---
 
@@ -64,7 +64,7 @@ iOS-style smart app banners with deep linking capabilities for multiple applicat
 
 **Tech Stack:** HTML5, CSS3, Vanilla JS (URL Schemes)
 
-[**Launch Demo →**](tt/index.html)
+[**Launch Demo →**](peisi0.github.io/tt/)
 
 ---
 
@@ -83,7 +83,7 @@ A Duolingo-style chemistry learning game focused on mastering chemical ions and 
 
 **Tech Stack:** HTML5, CSS3, KaTeX Library, Vanilla JS
 
-[**Launch Demo →**](web/index.html)
+[**Launch Demo →**](peisi0.github.io/web/)
 
 ---
 
@@ -107,7 +107,7 @@ A Duolingo-style chemistry learning game focused on mastering chemical ions and 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/fun_web.git
+   git clone https://github.com/peisi0/fun_web.git
    cd fun_web
    ```
 
@@ -247,8 +247,8 @@ MIT License - feel free to use these projects for learning and inspiration!
 
 ## 🔗 Links
 
-- **Live Site:** [https://your-username.github.io/fun_web/](https://your-username.github.io/fun_web/)
-- **GitHub:** [https://github.com/your-username/fun_web](https://github.com/your-username/fun_web)
+- **Live Site:** [https://peisi0.github.io/fun_web/](https://peisi0.github.io/fun_web/)
+- **GitHub:** [https://github.com/peisi0/fun_web](https://github.com/peisi0/fun_web)
 
 ---
 
@@ -266,5 +266,5 @@ Built with ❤️ using nothing but web standards and creativity.
 ## 📬 Contact
 
 Have questions or suggestions? Open an issue or reach out!
+Or, open [**Caridon University**](https://peisi0.github.io/fun_web/) to ask for more! 
 
-**Happy Coding! 🎉**
