@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xiangqi Master - Validated Dark Mode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* * ==========================================
+         * 1. 全局变量与基础重置
+         * ==========================================
+         */
+        :root {
+            --bg-dark: #302E2B;
+            --panel-bg: #262421;
+            --text-main: #FFFFFF;
+            --text-muted: #989795;
+            --board-bg: #E3C16F;
+            --line-color: #5C4033;
+            --highlight: rgba(255, 255, 100, 0.5);
+            --invalid: rgba(255, 50, 50, 0.5);
+            
+            --cell-size: 60px;
+            --padding: 35px; /* 略微增加边距，让边缘棋子不那么贴边 */
+            --piece-size: 52px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* 允许出现垂直滚动条，防止小屏幕下无法查看全貌 */
+            overflow-y: auto; 
+        }
+
+        /* * ==========================================
+         * 2. 布局框架 (Layout)
+         * ==========================================
+         */
+        .app-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            /* 移除死板的固定高度，改为最小高度让其自由舒展 */
+            min-height: 680px; 
+            width: 100%;
+            padding: 30px 20px;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .board-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* * ==========================================
+         * 3. 完美象棋棋盘 (Board Rendering)
+         * ==========================================
+         */
+        .board-container {
+            position: relative;
+            width: calc(var(--cell-size) * 8 + var(--padding) * 2);
+            height: calc(var(--cell-size) * 9 + var(--padding) * 2);
+            background-color: var(--board-bg);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            overflow: hidden;
+            /* 核心修复：禁止 flex 布局在空间不足时强制压缩棋盘！ */
+            flex-shrink: 0; 
+        }
+
+        .board-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent);
+            background-size: 4px 4px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .board-grid-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .river-text {
+            position: absolute;
+            width: 100%;
+            top: calc(var(--padding) + var(--cell-size) * 4);
+            height: var(--cell-size);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 80px;
+            z-index: 1;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--line-color);
+            pointer-events: none;
+            font-family: "Kaiti", "STKaiti", serif;
+            opacity: 0.8;
+            transform: scaleY(1.2);
+        }
+        
+        .river-text div { display: flex; gap: 40px; }
+
+        /* * ==========================================
+         * 4. 纯 CSS 3D 棋子设计
+         * ==========================================
+         */
+        .piece {
+            position: absolute;
+            width: var(--piece-size);
+            height: var(--piece-size);
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #FFF8DC, #EED591);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: 900;
+            font-family: "Kaiti", "STKaiti", serif;
+            z-index: 10;
+            box-shadow: 
+                2px 4px 6px rgba(0, 0, 0, 0.4), 
+                inset 0px 2px 4px rgba(255, 255, 255, 0.6),
+                inset 0px -4px 6px rgba(0, 0, 0, 0.2),
+                0 0 0 1px #8B7355;
+            transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        left 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.1s ease,
+                        box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .piece.red { color: #C62828; text-shadow: 1px 1px 0px rgba(255,255,255,0.5), -1px -1px 0px rgba(0,0,0,0.2); }
+        .piece.black { color: #111; text-shadow: 1px 1px 0px rgba(255,255,255,0.4), -1px -1px 0px rgba(0,0,0,0.5); }
+
+        .piece:hover { transform: scale(1.05); z-index: 11; }
+        .piece.selected {
+            box-shadow: 
+                0 0 0 4px var(--highlight),
+                2px 4px 6px rgba(0, 0, 0, 0.4), 
+                inset 0px 2px 4px rgba(255, 255, 255, 0.6),
+                inset 0px -4px 6px rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
+            z-index: 12;
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        .shake-error {
+            animation: shake 0.3s ease-in-out;
+            box-shadow: 0 0 0 4px var(--invalid) !important;
+        }
+
+        /* * ==========================================
+         * 5. 侧边栏面板
+         * ==========================================
+         */
+        .sidebar {
+            width: 320px; 
+            background-color: var(--panel-bg);
+            border-radius: 8px; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            flex-shrink: 0; /* 确保侧边栏也不会被挤压 */
+        }
+
+        .player-info {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background-color: #211F1C;
+        }
+
+        .player-profile { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 40px; height: 40px; border-radius: 4px; background-color: #444;
+            display: flex; justify-content: center; align-items: center;
+            color: #aaa; font-size: 20px;
+        }
+
+        .user-details { display: flex; flex-direction: column; }
+        .username { font-weight: bold; font-size: 14px; }
+        .rating { font-size: 12px; color: var(--text-muted); }
+
+        .timer {
+            background-color: #1A1916; padding: 8px 12px; border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace; font-size: 20px;
+            font-weight: bold; display: flex; align-items: center; gap: 8px;
+            min-width: 90px; justify-content: center;
+        }
+        .timer.active { background-color: #FFF; color: #000; }
+
+        .history-panel {
+            flex: 1; background-color: var(--panel-bg); overflow-y: auto;
+            border-top: 1px solid #363431; border-bottom: 1px solid #363431;
+        }
+        .history-list { list-style: none; }
+        .history-item { display: flex; padding: 8px 20px; font-size: 14px; color: #D3D3D3; }
+        .history-item:nth-child(even) { background-color: #2A2826; }
+        .history-num { width: 40px; color: var(--text-muted); }
+        .history-move { flex: 1; cursor: pointer; }
+        .history-move:hover { color: #FFF; }
+
+        .controls { padding: 15px; display: flex; gap: 10px; background-color: #211F1C; }
+        .btn {
+            flex: 1; padding: 10px 0; background-color: #363431; color: #C0BFBE;
+            border: none; border-radius: 4px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: background-color 0.2s, color 0.2s;
+            display: flex; gap: 8px; justify-content: center; align-items: center;
+        }
+        .btn:hover { background-color: #4A4845; color: #FFF; }
+        
+        .history-panel::-webkit-scrollbar { width: 6px; }
+        .history-panel::-webkit-scrollbar-track { background: var(--panel-bg); }
+        .history-panel::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+
+        .status-bar {
+            margin-top: 16px; font-size: 16px; color: var(--text-muted);
+            height: 24px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="board-section">
+        <div class="board-container" id="board">
+            <svg class="board-grid-svg" id="board-svg"></svg>
+            <div class="river-text">
+                <div><span>楚</span><span>河</span></div>
+                <div><span>汉</span><span>界</span></div>
+            </div>
+            <div id="pieces-container"></div>
+        </div>
+        <div class="status-bar" id="status-bar">游戏开始 - 红方走子</div>
+    </div>
+
+    <div class="sidebar">
+        <div class="player-info">
+            <div class="player-profile">
+                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="user-details">
+                    <span class="username">Grandmaster AI</span>
+                    <span class="rating">ELO 2850</span>
+                </div>
+            </div>
+            <div class="timer" id="timer-black">10:00</div>
+        </div>
+
+        <div class="history-panel" id="history-container">
+            <ul class="history-list" id="history-list"></ul>
+        </div>
+
+        <div class="player-info">
+            <div class="player-profile">
+                <div class="avatar" style="background-color: #4A6B53; color: white;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="username">Guest Player</span>
+                    <span class="rating">ELO 1200</span>
+                </div>
+            </div>
+            <div class="timer active" id="timer-red">10:00</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="alert('认输功能尚未连接后端')"><i class="fa-solid fa-flag"></i> Resign</button>
+            <button class="btn" onclick="alert('求和请求已发送')"><i class="fa-solid fa-handshake"></i> Draw</button>
+            <button class="btn"><i class="fa-solid fa-gear"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 同步 CSS 中修改过的 padding (保持精确对齐)
+    const CONFIG = { padding: 35, cellSize: 60, pieceSize: 52, rows: 10, cols: 9 };
+
+    const INITIAL_BOARD = [
+        { id: 'b_r1', type: '車', color: 'black', x: 0, y: 0 }, { id: 'b_n1', type: '馬', color: 'black', x: 1, y: 0 },
+        { id: 'b_b1', type: '象', color: 'black', x: 2, y: 0 }, { id: 'b_a1', type: '士', color: 'black', x: 3, y: 0 },
+        { id: 'b_k',  type: '将', color: 'black', x: 4, y: 0 }, { id: 'b_a2', type: '士', color: 'black', x: 5, y: 0 },
+        { id: 'b_b2', type: '象', color: 'black', x: 6, y: 0 }, { id: 'b_n2', type: '馬', color: 'black', x: 7, y: 0 },
+        { id: 'b_r2', type: '車', color: 'black', x: 8, y: 0 }, { id: 'b_c1', type: '砲', color: 'black', x: 1, y: 2 },
+        { id: 'b_c2', type: '砲', color: 'black', x: 7, y: 2 }, { id: 'b_p1', type: '卒', color: 'black', x: 0, y: 3 },
+        { id: 'b_p2', type: '卒', color: 'black', x: 2, y: 3 }, { id: 'b_p3', type: '卒', color: 'black', x: 4, y: 3 },
+        { id: 'b_p4', type: '卒', color: 'black', x: 6, y: 3 }, { id: 'b_p5', type: '卒', color: 'black', x: 8, y: 3 },
+
+        { id: 'r_p1', type: '兵', color: 'red', x: 0, y: 6 }, { id: 'r_p2', type: '兵', color: 'red', x: 2, y: 6 },
+        { id: 'r_p3', type: '兵', color: 'red', x: 4, y: 6 }, { id: 'r_p4', type: '兵', color: 'red', x: 6, y: 6 },
+        { id: 'r_p5', type: '兵', color: 'red', x: 8, y: 6 }, { id: 'r_c1', type: '炮', color: 'red', x: 1, y: 7 },
+        { id: 'r_c2', type: '炮', color: 'red', x: 7, y: 7 }, { id: 'r_r1', type: '俥', color: 'red', x: 0, y: 9 },
+        { id: 'r_n1', type: '傌', color: 'red', x: 1, y: 9 }, { id: 'r_b1', type: '相', color: 'red', x: 2, y: 9 },
+        { id: 'r_a1', type: '仕', color: 'red', x: 3, y: 9 }, { id: 'r_k',  type: '帅', color: 'red', x: 4, y: 9 },
+        { id: 'r_a2', type: '仕', color: 'red', x: 5, y: 9 }, { id: 'r_b2', type: '相', color: 'red', x: 6, y: 9 },
+        { id: 'r_n2', type: '傌', color: 'red', x: 7, y: 9 }, { id: 'r_r2', type: '俥', color: 'red', x: 8, y: 9 },
+    ];
+
+    let piecesData = [];
+    let selectedPiece = null;
+    let turnColor = 'red';
+    let moveCount = 1;
+
+    const boardEl = document.getElementById('board');
+    const svgEl = document.getElementById('board-svg');
+    const piecesContainer = document.getElementById('pieces-container');
+    const historyList = document.getElementById('history-list');
+    const historyContainer = document.getElementById('history-container');
+    const statusBar = document.getElementById('status-bar');
+
+    function drawBoardLines() {
+        const p = CONFIG.padding, cs = CONFIG.cellSize, c = '#5C4033', w = 2;
+        let svg = '';
+        for (let i = 0; i < 10; i++) svg += `<line x1="${p}" y1="${p+i*cs}" x2="${p+8*cs}" y2="${p+i*cs}" stroke="${c}" stroke-width="${w}" />`;
+        for (let i = 0; i < 9; i++) {
+            if (i === 0 || i === 8) svg += `<line x1="${p+i*cs}" y1="${p}" x2="${p+i*cs}" y2="${p+9*cs}" stroke="${c}" stroke-width="${w}" />`;
+            else {
+                svg += `<line x1="${p+i*cs}" y1="${p}" x2="${p+i*cs}" y2="${p+4*cs}" stroke="${c}" stroke-width="${w}" />`;
+                svg += `<line x1="${p+i*cs}" y1="${p+5*cs}" x2="${p+i*cs}" y2="${p+9*cs}" stroke="${c}" stroke-width="${w}" />`;
+            }
+        }
+        svg += `<line x1="${p+3*cs}" y1="${p}" x2="${p+5*cs}" y2="${p+2*cs}" stroke="${c}" stroke-width="${w}" />`;
+        svg += `<line x1="${p+5*cs}" y1="${p}" x2="${p+3*cs}" y2="${p+2*cs}" stroke="${c}" stroke-width="${w}" />`;
+        svg += `<line x1="${p+3*cs}" y1="${p+7*cs}" x2="${p+5*cs}" y2="${p+9*cs}" stroke="${c}" stroke-width="${w}" />`;
+        svg += `<line x1="${p+5*cs}" y1="${p+7*cs}" x2="${p+3*cs}" y2="${p+9*cs}" stroke="${c}" stroke-width="${w}" />`;
+        const drawCross = (x, y) => {
+            const cx=p+x*cs, cy=p+y*cs, d=12, m=4; let r='';
+            if(x>0) r+=`<path d="M ${cx-m-d} ${cy-m} L ${cx-m} ${cy-m} L ${cx-m} ${cy-m-d}" fill="none" stroke="${c}" stroke-width="2"/><path d="M ${cx-m-d} ${cy+m} L ${cx-m} ${cy+m} L ${cx-m} ${cy+m+d}" fill="none" stroke="${c}" stroke-width="2"/>`;
+            if(x<8) r+=`<path d="M ${cx+m+d} ${cy-m} L ${cx+m} ${cy-m} L ${cx+m} ${cy-m-d}" fill="none" stroke="${c}" stroke-width="2"/><path d="M ${cx+m+d} ${cy+m} L ${cx+m} ${cy+m} L ${cx+m} ${cy+m+d}" fill="none" stroke="${c}" stroke-width="2"/>`;
+            return r;
+        };
+        [{x:1,y:2},{x:7,y:2},{x:1,y:7},{x:7,y:7},{x:0,y:3},{x:2,y:3},{x:4,y:3},{x:6,y:3},{x:8,y:3},{x:0,y:6},{x:2,y:6},{x:4,y:6},{x:6,y:6},{x:8,y:6}].forEach(pos => svg += drawCross(pos.x, pos.y));
+        svgEl.innerHTML = svg;
+    }
+
+    function getPixelPosition(x, y) {
+        return { left: CONFIG.padding + x * CONFIG.cellSize - CONFIG.pieceSize / 2, top: CONFIG.padding + y * CONFIG.cellSize - CONFIG.pieceSize / 2 };
+    }
+
+    function initPieces() {
+        piecesData = JSON.parse(JSON.stringify(INITIAL_BOARD)).map(p => ({...p, alive: true}));
+        piecesData.forEach(piece => {
+            const el = document.createElement('div');
+            el.className = `piece ${piece.color}`;
+            el.textContent = piece.type;
+            const pos = getPixelPosition(piece.x, piece.y);
+            el.style.left = `${pos.left}px`; el.style.top = `${pos.top}px`;
+            piece.element = el;
+            piecesContainer.appendChild(el);
+        });
+    }
+
+    function getPieceAt(x, y) {
+        return piecesData.find(p => p.x === x && p.y === y && p.alive);
+    }
+
+    function countPiecesBetween(x1, y1, x2, y2) {
+        let count = 0;
+        if (x1 === x2) {
+            const min = Math.min(y1, y2), max = Math.max(y1, y2);
+            for (let y = min + 1; y < max; y++) { if (getPieceAt(x1, y)) count++; }
+        } else if (y1 === y2) {
+            const min = Math.min(x1, x2), max = Math.max(x1, x2);
+            for (let x = min + 1; x < max; x++) { if (getPieceAt(x, y1)) count++; }
+        }
+        return count;
+    }
+
+    function isKingsFacing() {
+        const redKing = piecesData.find(p => p.type === '帅' && p.alive);
+        const blackKing = piecesData.find(p => p.type === '将' && p.alive);
+        if (!redKing || !blackKing) return false;
+        if (redKing.x === blackKing.x) {
+            return countPiecesBetween(redKing.x, redKing.y, blackKing.x, blackKing.y) === 0;
+        }
+        return false;
+    }
+
+    function checkPieceRules(piece, tx, ty, targetPiece) {
+        const dx = Math.abs(tx - piece.x);
+        const dy = Math.abs(ty - piece.y);
+        const vx = tx - piece.x;
+        const vy = ty - piece.y;
+
+        switch (piece.type) {
+            case '兵': case '卒':
+                const isRed = piece.color === 'red';
+                const isForward = isRed ? vy === -1 : vy === 1;
+                const hasCrossed = isRed ? piece.y <= 4 : piece.y >= 5;
+                if (!hasCrossed) return dx === 0 && isForward;
+                return (dx === 0 && isForward) || (dx === 1 && dy === 0);
+
+            case '車': case '俥':
+                return (dx === 0 || dy === 0) && countPiecesBetween(piece.x, piece.y, tx, ty) === 0;
+
+            case '炮': case '砲':
+                const piecesBetween = countPiecesBetween(piece.x, piece.y, tx, ty);
+                if (targetPiece) return (dx === 0 || dy === 0) && piecesBetween === 1;
+                return (dx === 0 || dy === 0) && piecesBetween === 0;
+
+            case '馬': case '傌':
+                if (dx === 1 && dy === 2) {
+                    const blockY = piece.y + (vy > 0 ? 1 : -1);
+                    return !getPieceAt(piece.x, blockY); 
+                } else if (dx === 2 && dy === 1) {
+                    const blockX = piece.x + (vx > 0 ? 1 : -1);
+                    return !getPieceAt(blockX, piece.y); 
+                }
+                return false;
+
+            case '相': case '象':
+                if (dx !== 2 || dy !== 2) return false;
+                if (piece.color === 'red' && ty <= 4) return false; 
+                if (piece.color === 'black' && ty >= 5) return false; 
+                const eyeX = piece.x + vx / 2;
+                const eyeY = piece.y + vy / 2;
+                return !getPieceAt(eyeX, eyeY);
+
+            case '仕': case '士':
+                if (dx !== 1 || dy !== 1) return false;
+                if (tx < 3 || tx > 5) return false;
+                if (piece.color === 'red' && ty < 7) return false;
+                if (piece.color === 'black' && ty > 2) return false;
+                return true;
+
+            case '帅': case '将':
+                if (dx + dy !== 1) return false;
+                if (tx < 3 || tx > 5) return false;
+                if (piece.color === 'red' && ty < 7) return false;
+                if (piece.color === 'black' && ty > 2) return false;
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    function isValidMove(piece, tx, ty, targetPiece) {
+        if (!checkPieceRules(piece, tx, ty, targetPiece)) return false;
+
+        const origX = piece.x, origY = piece.y;
+        let targetWasAlive = true;
+        if (targetPiece) {
+            targetWasAlive = targetPiece.alive;
+            targetPiece.alive = false; 
+        }
+        piece.x = tx; piece.y = ty;
+
+        const willFly = isKingsFacing();
+
+        piece.x = origX; piece.y = origY;
+        if (targetPiece) targetPiece.alive = targetWasAlive;
+
+        if (willFly) {
+            statusBar.textContent = "警告：将帅不可直接照面！";
+            statusBar.style.color = "#FF6B6B";
+            return false;
+        }
+
+        return true;
+    }
+
+    boardEl.addEventListener('mousedown', (e) => {
+        const rect = boardEl.getBoundingClientRect();
+        const gridX = Math.round((e.clientX - rect.left - CONFIG.padding) / CONFIG.cellSize);
+        const gridY = Math.round((e.clientY - rect.top - CONFIG.padding) / CONFIG.cellSize);
+        if (gridX < 0 || gridX > 8 || gridY < 0 || gridY > 9) return;
+        handleGridClick(gridX, gridY);
+    });
+
+    function handleGridClick(x, y) {
+        statusBar.style.color = "var(--text-muted)";
+        const targetPiece = getPieceAt(x, y);
+
+        if (selectedPiece) {
+            if (targetPiece && targetPiece.color === selectedPiece.color) {
+                clearSelection();
+                selectPiece(targetPiece);
+            } else {
+                if (isValidMove(selectedPiece, x, y, targetPiece)) {
+                    executeMove(selectedPiece, x, y, targetPiece);
+                } else {
+                    selectedPiece.element.classList.add('shake-error');
+                    setTimeout(() => selectedPiece.element.classList.remove('shake-error'), 300);
+                }
+            }
+        } else {
+            if (targetPiece && targetPiece.color === turnColor) {
+                selectPiece(targetPiece);
+            }
+        }
+    }
+
+    function selectPiece(piece) {
+        selectedPiece = piece;
+        piece.element.classList.add('selected');
+    }
+
+    function clearSelection() {
+        if (selectedPiece) {
+            selectedPiece.element.classList.remove('selected');
+            selectedPiece = null;
+        }
+    }
+
+    function executeMove(piece, targetX, targetY, targetPiece = null) {
+        const startX = piece.x;
+        
+        if (targetPiece) {
+            targetPiece.alive = false;
+            targetPiece.element.style.transform = 'scale(0)';
+            targetPiece.element.style.opacity = '0';
+            setTimeout(() => targetPiece.element.remove(), 300);
+            
+            if (targetPiece.type === '帅' || targetPiece.type === '将') {
+                setTimeout(() => alert(`${piece.color === 'red' ? '红方' : '黑方'} 胜利！绝杀！`), 400);
+            }
+        }
+
+        piece.x = targetX; piece.y = targetY;
+        const pos = getPixelPosition(targetX, targetY);
+        piece.element.style.left = `${pos.left}px`;
+        piece.element.style.top = `${pos.top}px`;
+
+        clearSelection();
+        addMoveToHistory(piece.type, startX, targetX);
+
+        turnColor = turnColor === 'red' ? 'black' : 'red';
+        toggleTimers();
+        statusBar.textContent = turnColor === 'red' ? "红方走子" : "黑方走子";
+    }
+
+    function addMoveToHistory(pieceName, startX, endX) {
+        const action = "平"; 
+        const moveText = `${pieceName}${9-startX}${action}${9-endX}`;
+        
+        if (turnColor === 'red') {
+            const li = document.createElement('li');
+            li.className = 'history-item';
+            li.innerHTML = `<div class="history-num">${moveCount}.</div><div class="history-move red-move">${moveText}</div><div class="history-move black-move">...</div>`;
+            historyList.appendChild(li);
+        } else {
+            const lastLi = historyList.lastElementChild;
+            if (lastLi) lastLi.querySelector('.black-move').textContent = moveText;
+            moveCount++;
+        }
+        historyContainer.scrollTop = historyContainer.scrollHeight;
+    }
+
+    function toggleTimers() {
+        const timerRed = document.getElementById('timer-red');
+        const timerBlack = document.getElementById('timer-black');
+        if (turnColor === 'red') {
+            timerRed.classList.add('active'); timerBlack.classList.remove('active');
+        } else {
+            timerBlack.classList.add('active'); timerRed.classList.remove('active');
+        }
+    }
+
+    drawBoardLines();
+    initPieces();
+
+</script>
+</body>
+</html>
