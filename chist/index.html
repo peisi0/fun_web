@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建國至1978年間的內政與外交時間軸</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        /* 篩選器樣式 */
+        .filters {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .filter-btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #e0e0e0;
+            color: #555;
+        }
+        .filter-btn:hover {
+            opacity: 0.8;
+        }
+        .filter-btn.active.all { background-color: #2c3e50; color: white; }
+        .filter-btn.active.domestic { background-color: #e74c3c; color: white; }
+        .filter-btn.active.foreign { background-color: #3498db; color: white; }
+        .filter-btn.active.hk { background-color: #2ecc71; color: white; }
+
+        /* 時間軸主體樣式 */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #bdc3c7;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        /* 時間軸卡片容器 */
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            transition: all 0.4s ease;
+        }
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        /* 卡片上的小圓點 */
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid #bdc3c7;
+            top: 20px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .right::after {
+            left: -10px;
+        }
+
+        /* 卡片內容樣式 */
+        .content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 5px solid;
+            transition: transform 0.3s ease;
+        }
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .content h2 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 22px;
+        }
+        .content p {
+            margin: 0;
+            line-height: 1.6;
+            color: #555;
+        }
+        .content ul {
+            margin-top: 10px;
+            padding-left: 20px;
+            color: #555;
+        }
+        .content strong {
+            color: #2c3e50;
+            background-color: #f1f2f6;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* 標籤顏色 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        /* 類別配色 */
+        .domestic .content { border-top-color: #e74c3c; }
+        .domestic .tag { background-color: #e74c3c; }
+        .domestic::after { border-color: #e74c3c; }
+
+        .foreign .content { border-top-color: #3498db; }
+        .foreign .tag { background-color: #3498db; }
+        .foreign::after { border-color: #3498db; }
+
+        .hk .content { border-top-color: #2ecc71; }
+        .hk .tag { background-color: #2ecc71; }
+        .hk::after { border-color: #2ecc71; }
+
+        /* 響應式設計：手機端單列顯示 */
+        @media screen and (max-width: 768px) {
+            .timeline::after { left: 31px; }
+            .container { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .container::after { left: 21px; }
+            .right { left: 0; }
+            .filter-btn { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🇨🇳 建國至1978年間的內政與外交</h1>
+    <p class="subtitle">互動式溫習時間軸｜點擊下方按鈕篩選重點</p>
+
+    <div class="filters">
+        <button class="filter-btn active all" onclick="filterTimeline('all')">顯示全部</button>
+        <button class="filter-btn domestic" onclick="filterTimeline('domestic')">🔴 內政與建設</button>
+        <button class="filter-btn foreign" onclick="filterTimeline('foreign')">🔵 外交政策</button>
+        <button class="filter-btn hk" onclick="filterTimeline('hk')">🟢 內地與香港關係</button>
+    </div>
+
+    <div class="timeline">
+
+        <div class="container left domestic item">
+            <div class="content">
+                <span class="tag">內政</span>
+                <h2>1949年10月：中華人民共和國成立</h2>
+                <p>在天安門廣場舉行開國大典。建國初期展開政治運動，如土地改革、鎮壓反革命、「三反」「五反」運動。</p>
+            </div>
+        </div>
+
+        <div class="container right hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1949年：暫不收回香港</h2>
+                <p>新中國成立後，決定暫時不收回香港，強調香港是中國不可分割的領土。採取<strong>「長期打算，充分利用」</strong>的政策，維持英國管治以促進內地建設。</p>
+            </div>
+        </div>
+
+        <div class="container left foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1950年：中蘇結盟與抗美援朝</h2>
+                <ul>
+                    <li><strong>「一邊倒」政策：</strong>2月簽訂《中蘇友好同盟互助條約》，結成軍事同盟並接受蘇聯經援。</li>
+                    <li><strong>抗美援朝：</strong>韓戰爆發，中國派志願軍入朝對抗聯合國軍。美國第七艦隊協防台灣海峽，中美關係惡化。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container right hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1950-1951年：邊境封鎖與經濟轉型</h2>
+                <p>受冷戰及韓戰禁運影響，內地與香港邊境於1951年開始封鎖。聯合國對華禁運打擊香港轉口貿易，加上內地資金、勞動力南下，促使<strong>香港發展輕工業，成功實現經濟轉型</strong>。</p>
+            </div>
+        </div>
+
+        <div class="container left domestic item">
+            <div class="content">
+                <span class="tag">內政</span>
+                <h2>1953年：第一個五年計劃</h2>
+                <p>以建立社會主義工業化為基礎，重工業優先。同年實行社會主義改造（農業集體化、手工業集體化、私營工商業國有化）。</p>
+            </div>
+        </div>
+
+        <div class="container right foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1954-1955年：和平共處與萬隆會議</h2>
+                <ul>
+                    <li>1954年：周恩來訪問印度、緬甸，倡導<strong>「和平共處五項原則」</strong>。</li>
+                    <li>1955年：出席印尼<strong>萬隆會議</strong>（亞非會議），提出<strong>「求同存異」</strong>方針，積極與亞非國家建交。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container left domestic item">
+            <div class="content">
+                <span class="tag">內政</span>
+                <h2>1958年：「大躍進」與人民公社</h2>
+                <p>提出「多快好省」，推行「以鋼為綱」。因浮誇風及自然災害，導致隨後出現「三年困難時期」。</p>
+            </div>
+        </div>
+
+        <div class="container right foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1950年代後期至1960年：中蘇交惡</h2>
+                <p>赫魯曉夫上台後否定斯大林，並批評中國「大躍進」。<strong>1960年蘇聯終止對華援助</strong>並撤回專家，中蘇關係破裂。</p>
+            </div>
+        </div>
+
+        <div class="container left hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1965年：東江水供港</h2>
+                <p>1963年香港發生嚴重旱災，實施制水。1965年3月，內地正式開始向香港供應<strong>東江水</strong>，解決兩地互換生活所需的民生問題。</p>
+            </div>
+        </div>
+
+        <div class="container right domestic item">
+            <div class="content">
+                <span class="tag">內政</span>
+                <h2>1966-1976年：文化大革命</h2>
+                <p>毛澤東發動「文革」，引發紅衛兵運動、批鬥及武鬥。導致黨政機關受衝擊、社會秩序混亂及文物古蹟受破壞。</p>
+            </div>
+        </div>
+
+        <div class="container left hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1967年：「六七暴動」</h2>
+                <p>受內地「文革」思潮影響，香港勞資糾紛演變成針對港府的政治運動，爆發連串流血衝突（又稱「反英抗暴」）。</p>
+            </div>
+        </div>
+
+        <div class="container right foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1969年：珍寶島事件</h2>
+                <p>中蘇邊境發生多次武裝衝突，最嚴重為「珍寶島事件」，兩國關係全面破裂，中國面臨蘇聯軍事威脅。</p>
+            </div>
+        </div>
+
+        <div class="container left foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1971年：乒乓外交與重返聯合國</h2>
+                <ul>
+                    <li><strong>乒乓外交：</strong>美國乒乓球隊訪華，「小球轉動大球」，中美關係破冰。基辛格秘密訪華。</li>
+                    <li><strong>重返聯合國：</strong>第26屆聯大通過決議，<strong>恢復中華人民共和國在聯合國的合法席位</strong>（成為安理會常任理事國）。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container right foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1972年：中美正常化與中日建交</h2>
+                <ul>
+                    <li><strong>尼克遜訪華：</strong>美國總統尼克遜訪華，中美關係開始正常化。</li>
+                    <li><strong>中日建交：</strong>日本首相田中角榮訪華，發表《中日聯合聲明》正式建交。同年與英、法等西方國家建交。</li>
+                    <li><strong>香港地位：</strong>聯合國將香港、澳門從「殖民地」名單剔除。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container left hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1974年：實施「抵壘政策」</h2>
+                <p>針對內地偷渡潮，港府宣布實施「抵壘政策」：若非法入境者能成功抵達市區便可申請合法居留，若在邊界被截獲則遣返。政策於1980年廢除。</p>
+            </div>
+        </div>
+
+        <div class="container right foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1974年：「三個世界」理論</h2>
+                <p>毛澤東會見贊比亞總統時提出，將中國與亞非拉發展中國家歸為「第三世界」，團結對抗美、蘇兩大超級大國的霸權。</p>
+            </div>
+        </div>
+
+        <div class="container left foreign item">
+            <div class="content">
+                <span class="tag">外交</span>
+                <h2>1979年：中美正式建交</h2>
+                <p>中美發表《中美聯合公報》，1979年1月1日起正式建立外交關係。美國承認中華人民共和國政府是中國唯一合法政府，承認台灣是中國的一部分。</p>
+            </div>
+        </div>
+
+        <div class="container right hk item">
+            <div class="content">
+                <span class="tag">香港</span>
+                <h2>1979年：九廣鐵路直通車復辦</h2>
+                <p>隨着內地改革開放及關係和緩，停頓多年的廣州至九龍直通火車恢復運作，便利兩地人員往來。</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function filterTimeline(category) {
+            // 更新按鈕樣式
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.filter-btn.' + category).classList.add('active');
+
+            // 獲取所有時間軸卡片
+            const items = document.querySelectorAll('.item');
+            
+            // 用來重新分配左右位置的計數器
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                // 檢查是否符合篩選條件
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.style.display = 'block';
+                    
+                    // 動態調整左右佈局
+                    item.classList.remove('left', 'right');
+                    if (visibleCount % 2 === 0) {
+                        item.classList.add('left');
+                    } else {
+                        item.classList.add('right');
+                    }
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
