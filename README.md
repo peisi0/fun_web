@@ -87,6 +87,57 @@ A Duolingo-style chemistry learning game focused on mastering chemical ions and 
 
 ---
 
+### 5. **Xiangqi Master** - Chinese Chess
+**Path:** `/c_chess`
+
+A dark-mode Chinese chess game with move validation and polished board rendering.
+
+**Features:**
+- ♟️ Complete Xiangqi board and pieces
+- ✅ Rule-aware move validation
+- 🌙 Dark theme interface
+- 📱 Desktop and mobile-friendly layout
+
+**Tech Stack:** HTML5, CSS3, Vanilla JS
+
+[**Launch Demo →**](https://peisi0.github.io/fun_web/c_chess/)
+
+---
+
+### 6. **Historical Timeline** - Domestic & Foreign Affairs
+**Path:** `/chist`
+
+An interactive timeline with category filters for exploring historical events.
+
+**Features:**
+- 🕰️ Timeline card layout
+- 🔎 Category-based filtering
+- 🎯 Clean visual grouping of events
+- 📚 Content-focused presentation
+
+**Tech Stack:** HTML5, CSS3, Vanilla JS
+
+[**Launch Demo →**](https://peisi0.github.io/fun_web/chist/)
+
+---
+
+### 7. **Healthy Habits Slides** - Lifestyle Presentation
+**Path:** `/eng`
+
+A full-screen educational slide deck explaining healthy habits and healthy lifestyle concepts.
+
+**Features:**
+- 📘 Multi-slide educational content
+- ⌨️ Keyboard-friendly navigation
+- ✨ Smooth transitions and modern styling
+- 📱 Responsive full-screen layout
+
+**Tech Stack:** HTML5, Tailwind CSS (CDN), Vanilla JS
+
+[**Launch Demo →**](https://peisi0.github.io/fun_web/eng/)
+
+---
+
 ## 🛠️ Technologies Used
 
 | Technology | Purpose |
@@ -161,6 +212,15 @@ fun_web/
 ├── tt/                    # Smart App Banner
 │   ├── index.html
 │   └── README.md
+│
+├── c_chess/               # Xiangqi Master
+│   └── index.html
+│
+├── chist/                 # Historical Timeline
+│   └── index.html
+│
+├── eng/                   # Healthy Habits Slides
+│   └── index.html
 │
 └── web/                   # Chemistry Quiz
     ├── index.html
@@ -267,4 +327,3 @@ Built with ❤️ using nothing but web standards and creativity.
 
 Have questions or suggestions? Open an issue or reach out!
 Or, open [**Caridon University**](https://peisi0.github.io/Caridon/) to ask for more! 
-
