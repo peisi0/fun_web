@@ -16,6 +16,9 @@ open ourchat/index.html
 open thermometer/index.html
 open tt/index.html
 open web/index.html
+open c_chess/index.html
+open chist/index.html
+open eng/index.html
 ```
 
 ### Option 2: Local Server (Recommended)
@@ -70,7 +73,10 @@ fun_web/
 ├── ourchat/           ← WeChat clone
 ├── thermometer/       ← Interactive thermometer
 ├── tt/                ← App banner
-└── web/               ← Chemistry quiz
+├── web/               ← Chemistry quiz
+├── c_chess/           ← Chinese chess
+├── chist/             ← Historical timeline
+└── eng/               ← Healthy habits slides
 ```
 
 ## ✨ Quick Links
@@ -80,6 +86,9 @@ fun_web/
 - **Thermometer:** [thermometer/index.html](thermometer/index.html)
 - **App Banner:** [tt/index.html](tt/index.html)
 - **Chemistry Quiz:** [web/index.html](web/index.html)
+- **Xiangqi Master:** [c_chess/index.html](c_chess/index.html)
+- **Historical Timeline:** [chist/index.html](chist/index.html)
+- **Healthy Habits Slides:** [eng/index.html](eng/index.html)
 
 ## 🛠️ No Build Required!
 
@@ -99,7 +108,7 @@ git push origin main
 # Go to: Settings → Pages → Source: main branch
 ```
 
-Your site will be live at: `https://username.github.io/fun_web/`
+Your site will be live at: `https://peisi0.github.io/fun_web/`
 
 ## 💡 Pro Tips
 
@@ -135,7 +144,7 @@ No compilation needed. 🎉
 
 ## 🐛 Issues?
 
-Can't get it running? [Open an issue](https://github.com/username/fun_web/issues)
+Can't get it running? [Open an issue](https://github.com/peisi0/fun_web/issues)
 
 ---
 
