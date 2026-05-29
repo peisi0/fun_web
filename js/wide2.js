@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      2.1
 // @description  Simultaneous adjustment of jump and walk speed, walkSpeed fix.
-// @author       SELO & Gemini
+// @author       peisi0
 // @match        https://narrow.one/*
 // @grant        none
 // @run-at       document-start
